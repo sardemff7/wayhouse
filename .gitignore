@@ -2,5 +2,10 @@
 /src/config.h
 
 /wayhouse
+/wh-dock
+
+*-server-protocol.h
+*-client-protocol.h
+*-protocol.c
 
 /local-rules.mk
