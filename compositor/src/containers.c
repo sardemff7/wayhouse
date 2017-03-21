@@ -1056,6 +1056,7 @@ _wh_desktop_fullscreen_requested(struct weston_desktop_surface *surface, bool fu
 static void
 _wh_desktop_maximized_requested(struct weston_desktop_surface *surface, bool maximized, void *user_data)
 {
+    weston_desktop_surface_set_maximized(surface, FALSE);
     g_warning("Client requesting maximized state: unsupported");
 }
 
