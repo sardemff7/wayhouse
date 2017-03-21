@@ -117,7 +117,9 @@ _wh_container_resize(WhContainer *self)
     if ( WH_CONTAINER_IS_SURFACE(self) )
     {
         WhSurface *surface = WH_CONTAINER_SURFACE(self);
-        wh_surface_set_size(surface, width, height);
+        struct weston_geometry geometry = weston_desktop_surface_get_geometry(surface->desktop_surface);
+        if ( ( geometry.width != width ) || ( geometry.height != height ) )
+            wh_surface_set_size(surface, width, height);
         return;
     }
 
