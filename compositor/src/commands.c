@@ -153,14 +153,11 @@ _wh_command_parse_target(GScanner *scanner, WhCommand *self)
         switch ( g_scanner_get_next_token(scanner) )
         {
         case G_TOKEN_SYMBOL:
-            self->closure = g_cclosure_new(G_CALLBACK(wh_workspaces_focus_workspace), NULL, NULL);
             return WH_COMMAND_TARGET_TYPE_WORKSPACE_DIRECTION;
         break;
         case G_TOKEN_STRING:
-            self->closure = g_cclosure_new(G_CALLBACK(wh_workspaces_focus_workspace_name), NULL, NULL);
             return WH_COMMAND_TARGET_TYPE_WORKSPACE_NAME;
         case G_TOKEN_INT:
-            self->closure = g_cclosure_new(G_CALLBACK(wh_workspaces_focus_workspace_number), NULL, NULL);
             return WH_COMMAND_TARGET_TYPE_WORKSPACE_NUMBER;
         default:
         break;
@@ -171,11 +168,9 @@ _wh_command_parse_target(GScanner *scanner, WhCommand *self)
         switch ( g_scanner_get_next_token(scanner) )
         {
         case G_TOKEN_SYMBOL:
-            self->closure = g_cclosure_new(G_CALLBACK(wh_workspaces_focus_workspace), NULL, NULL);
             return WH_COMMAND_TARGET_TYPE_OUTPUT_DIRECTION;
         break;
         case G_TOKEN_STRING:
-            self->closure = g_cclosure_new(G_CALLBACK(wh_workspaces_focus_workspace_name), NULL, NULL);
             return WH_COMMAND_TARGET_TYPE_OUTPUT_NAME;
         default:
         break;
