@@ -507,10 +507,10 @@ wh_workspaces_free(WhWorkspaces *self)
     if ( self == NULL )
         return;
 
-    g_queue_free(self->history);
-
     g_hash_table_unref(self->workspaces_by_number);
     g_hash_table_unref(self->workspaces);
+
+    g_queue_free(self->history);
 
     g_free(self);
 }
