@@ -83,17 +83,31 @@ wh_outputs_control(WhOutputs *self, WhSeat *seat, WhStateChange state, const gch
     {
     case WH_STATE_ENABLE:
         if ( ! output->output->enabled )
+        {
             weston_output_enable(output->output);
+            wh_workspaces_add_output(wh_core_get_workspaces(self->core), output);
+        }
     break;
     case WH_STATE_DISABLE:
         if ( output->output->enabled )
+        {
             weston_output_disable(output->output);
+            wh_workspaces_remove_output(wh_core_get_workspaces(self->core), output);
+            output->current = NULL;
+        }
     break;
     case WH_STATE_TOGGLE:
         if ( output->output->enabled )
+        {
             weston_output_disable(output->output);
+            wh_workspaces_remove_output(wh_core_get_workspaces(self->core), output);
+            output->current = NULL;
+        }
         else
+        {
             weston_output_enable(output->output);
+            wh_workspaces_add_output(wh_core_get_workspaces(self->core), output);
+        }
     break;
     }
 }
@@ -168,11 +182,13 @@ _wh_outputs_output_created(struct wl_listener *listener, void *data)
 static void
 _wh_outputs_output_destroyed(struct wl_listener *listener, void *data)
 {
+    /* FIXME: we need a way to check that the output is gone for good or just disabled
     WhOutputs *self = wl_container_of(listener, self, output_destroy_listener);
     struct weston_output *output = data;
 
     g_hash_table_remove(self->outputs_by_name, output->name);
     g_hash_table_remove(self->outputs, output);
+    */
 }
 
 WhOutputs *
