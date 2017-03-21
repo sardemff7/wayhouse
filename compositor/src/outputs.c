@@ -271,9 +271,9 @@ wh_outputs_get(WhOutputs *self, WhOutput *current, WhDirection direction)
             continue;
 
         x = cx - ( output->output->x + output->output->width / 2 );
-        x = abs(x);
+        x = ABS(x);
         y = cy - ( output->output->y + output->output->height / 2 );
-        y = abs(y);
+        y = ABS(y);
         g_debug("        Try %s (%dx%d+%dx%d): %dx%d", output->output->name, output->output->width, output->output->height, output->output->x, output->output->y, x, y);
         if ( vertical )
         {
