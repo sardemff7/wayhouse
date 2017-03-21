@@ -997,6 +997,7 @@ static void
 _wh_desktop_committed(struct weston_desktop_surface *surface, int32_t sx, int32_t sy, void *user_data)
 {
     WhSurface *self = weston_desktop_surface_get_user_data(surface);
+    struct weston_geometry geometry = weston_desktop_surface_get_geometry(self->desktop_surface);
 
     int32_t x, y;
     if ( weston_desktop_surface_get_fullscreen(self->desktop_surface) )
@@ -1012,6 +1013,8 @@ _wh_desktop_committed(struct weston_desktop_surface *surface, int32_t sx, int32_
         x = self->container.geometry.x;
         y = self->container.geometry.y;
     }
+    x -= geometry.x;
+    y -= geometry.y;
     weston_view_set_position(self->view, x, y);
     weston_view_set_mask_infinite(self->view);
     weston_view_update_transform(self->view);
