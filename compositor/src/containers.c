@@ -340,7 +340,8 @@ _wh_workspace_new(WhWorkspaces *workspaces, guint64 number, const gchar *name)
         self->container.current = TRUE;
 
     g_hash_table_insert(workspaces->workspaces, self->name, self);
-    workspaces->workspaces_sorted = g_list_insert_sorted(workspaces->workspaces_sorted, self, _wh_workspace_compare);
+    workspaces->workspaces_sorted = g_list_concat(self->container.link, workspaces->workspaces_sorted);
+    workspaces->workspaces_sorted = g_list_sort(workspaces->workspaces_sorted, _wh_workspace_compare);
     g_queue_push_tail_link(workspaces->history, self->container.history_link);
 
     return self;
