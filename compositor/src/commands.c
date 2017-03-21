@@ -38,6 +38,7 @@
 
 #include "types.h"
 #include "wayhouse.h"
+#include "outputs.h"
 #include "containers.h"
 #include "commands.h"
 
@@ -63,6 +64,7 @@ typedef enum {
     WH_COMMAND_MOVE,
     WH_COMMAND_FULLSCREEN,
     WH_COMMAND_LAYOUT,
+    WH_COMMAND_OUTPUT,
 } WhCommandCommandSymbol;
 
 
@@ -73,6 +75,7 @@ static const gchar * const _wh_commands_symbols[] = {
     [WH_COMMAND_MOVE]       = "move",
     [WH_COMMAND_FULLSCREEN] = "fullscreen",
     [WH_COMMAND_LAYOUT]     = "layout",
+    [WH_COMMAND_OUTPUT]     = "output",
 };
 
 #define WH_DIRECTION_WORKSPACE (WH_DIRECTION_CHILD+1)
@@ -295,6 +298,17 @@ _wh_command_parse_command(GScanner *scanner, WhCommand *self)
             return FALSE;
         self->getter = WH_CORE_GETTER(wh_core_get_workspaces);
         self->closure = g_cclosure_new(G_CALLBACK(wh_workspaces_layout_switch), NULL, NULL);
+        return TRUE;
+    case WH_COMMAND_OUTPUT:
+        if ( ! _wh_command_parse_state_change(scanner, self) )
+            return FALSE;
+        g_value_init(&self->params[self->n_params], G_TYPE_UINT64);
+        g_value_set_uint64(&self->params[self->n_params], scanner->value.v_int64);
+        ++self->n_params;
+        if ( g_scanner_get_next_token(scanner) != G_TOKEN_STRING )
+            return FALSE;
+        self->closure = g_cclosure_new(G_CALLBACK(wh_outputs_control), NULL, NULL);
+        self->getter = WH_CORE_GETTER(wh_core_get_outputs);
         return TRUE;
     }
 

@@ -38,6 +38,7 @@ struct _WhOutputs {
     struct wl_listener output_create_listener;
     struct wl_listener output_destroy_listener;
     GHashTable *outputs;
+    GHashTable *outputs_by_name;
 };
 
 struct _WhOutput {
@@ -68,6 +69,35 @@ struct _WhWorkspace {
     gchar *name;
     guint64 number;
 };
+
+void
+wh_outputs_control(WhOutputs *self, WhSeat *seat, WhStateChange state, const gchar *name)
+{
+    WhOutput *output;
+
+    output = g_hash_table_lookup(self->outputs_by_name, name);
+    if ( output == NULL )
+        return;
+
+    switch ( state )
+    {
+    case WH_STATE_ENABLE:
+        if ( ! output->output->enabled )
+            weston_output_enable(output->output);
+    break;
+    case WH_STATE_DISABLE:
+        if ( output->output->enabled )
+            weston_output_disable(output->output);
+    break;
+    case WH_STATE_TOGGLE:
+        if ( output->output->enabled )
+            weston_output_disable(output->output);
+        else
+            weston_output_enable(output->output);
+    break;
+    }
+}
+
 gboolean
 wh_output_set_current_workspace(WhOutput *self, WhWorkspace *workspace)
 {
@@ -99,6 +129,7 @@ _wh_output_new(WhOutputs *outputs, struct weston_output *output)
     self->output = output;
 
     g_hash_table_insert(self->outputs->outputs, self->output, self);
+    g_hash_table_insert(self->outputs->outputs_by_name, self->output->name, self);
 
     wh_workspaces_add_output(wh_core_get_workspaces(self->outputs->core), self);
 }
@@ -149,6 +180,7 @@ wh_outputs_new(WhCore *core)
     self->core = core;
 
     self->outputs = g_hash_table_new_full(NULL, NULL, NULL, _wh_output_free);
+    self->outputs_by_name = g_hash_table_new(g_str_hash, g_str_equal);
 
     struct weston_compositor *compositor = wh_core_get_compositor(self->core);
     struct weston_output *output;
@@ -171,6 +203,7 @@ wh_outputs_free(WhOutputs *self)
     if ( self == NULL )
         return;
 
+    g_hash_table_unref(self->outputs_by_name);
     g_hash_table_unref(self->outputs);
 
     g_free(self);

@@ -30,6 +30,8 @@ void wh_outputs_free(WhOutputs *outputs);
 
 WhOutput *wh_outputs_get(WhOutputs *outputs, WhOutput *output, WhDirection direction);
 
+void wh_outputs_control(WhOutputs *outputs, WhSeat *seat, WhStateChange state, const gchar *name);
+
 gboolean wh_output_set_current_workspace(WhOutput *output, WhWorkspace *workspace);
 WhWorkspace *wh_output_get_current_workspace(WhOutput *output);
 
