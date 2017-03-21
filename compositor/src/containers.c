@@ -529,6 +529,31 @@ wh_workspaces_add_output(WhWorkspaces *self, WhOutput *output)
     wh_workspace_show(workspace);
 }
 
+void
+wh_workspaces_remove_output(WhWorkspaces *self, WhOutput *output)
+{
+    WhWorkspace *last, *workspace;
+    last = g_queue_peek_head(self->history);
+    gboolean current = ( last->output == output );
+
+    while ( last->output == output )
+        last = g_list_next(last->container.history_link)->data;
+
+    GHashTableIter iter;
+    g_hash_table_iter_init(&iter, self->workspaces);
+    while ( g_hash_table_iter_next(&iter, NULL, (gpointer *) &workspace) )
+    {
+        if ( workspace->output != output )
+            continue;
+
+        _wh_workspace_set_output(workspace, last->output);
+    }
+    if ( ! current )
+        return;
+    last = g_queue_peek_head(self->history);
+    wh_output_set_current_workspace(last->output, last);
+}
+
 static WhContainer *
 _wh_workspace_get_last(WhContainer *self)
 {

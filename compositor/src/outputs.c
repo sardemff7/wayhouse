@@ -137,7 +137,9 @@ _wh_output_new(WhOutputs *outputs, struct weston_output *output)
 static void
 _wh_output_free(gpointer data)
 {
-    WhSeat *self = data;
+    WhOutput *self = data;
+
+    wh_workspaces_remove_output(wh_core_get_workspaces(self->outputs->core), self);
 
     g_free(self);
 }
@@ -169,6 +171,8 @@ _wh_outputs_output_destroyed(struct wl_listener *listener, void *data)
     WhOutputs *self = wl_container_of(listener, self, output_destroy_listener);
     struct weston_output *output = data;
 
+    g_hash_table_remove(self->outputs_by_name, output->name);
+    g_hash_table_remove(self->outputs, output);
 }
 
 WhOutputs *

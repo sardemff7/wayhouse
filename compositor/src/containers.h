@@ -31,6 +31,7 @@ void wh_workspaces_free(WhWorkspaces *workspaces);
 
 void wh_workspaces_add_surface(WhWorkspaces *workspaces, WhSurface *surface);
 void wh_workspaces_add_output(WhWorkspaces *workspaces, WhOutput *output);
+void wh_workspaces_remove_output(WhWorkspaces *workspaces, WhOutput *output);
 void wh_workspaces_focus_container(WhWorkspaces *workspaces, WhSeat *seat, WhDirection direction);
 void wh_workspaces_focus_workspace(WhWorkspaces *workspaces, WhSeat *seat, WhTarget target);
 void wh_workspaces_focus_workspace_name(WhWorkspaces *workspaces, WhSeat *seat, const gchar *target);
