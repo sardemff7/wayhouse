@@ -57,7 +57,7 @@ void wh_surface_set_container(WhSurface *surface, WhContainer *container);
 void wh_surface_set_size(WhSurface *surface, gint32 width, gint32 height);
 void wh_surface_set_activated(WhSurface *surface, gboolean activated);
 
-void wh_surface_fullscreen(WhSurface *surface, WhSurfaceStateChange change);
+void wh_surface_fullscreen(WhSurface *surface, WhStateChange change);
 void wh_surface_close(WhSurface *surface);
 
 #endif /* __WAYHOUSE_CONTAINERS_H__ */

@@ -864,18 +864,18 @@ wh_surface_set_activated(WhSurface *self, gboolean activated)
 }
 
 void
-wh_surface_fullscreen(WhSurface *self, WhSurfaceStateChange change)
+wh_surface_fullscreen(WhSurface *self, WhStateChange change)
 {
     gboolean fullscreen = FALSE;
     switch ( change )
     {
-    case WH_SURFACE_STATE_ENABLE:
+    case WH_STATE_ENABLE:
         fullscreen = TRUE;
     break;
-    case WH_SURFACE_STATE_DISABLE:
+    case WH_STATE_DISABLE:
         fullscreen = FALSE;
     break;
-    case WH_SURFACE_STATE_TOGGLE:
+    case WH_STATE_TOGGLE:
         fullscreen = ! weston_desktop_surface_get_fullscreen(self->desktop_surface);
     break;
     }
@@ -1044,7 +1044,7 @@ static void
 _wh_desktop_fullscreen_requested(struct weston_desktop_surface *surface, bool fullscreen, struct weston_output *output, void *user_data)
 {
     WhSurface *self = weston_desktop_surface_get_user_data(surface);
-    wh_surface_fullscreen(self, fullscreen ? WH_SURFACE_STATE_ENABLE : WH_SURFACE_STATE_DISABLE);
+    wh_surface_fullscreen(self, fullscreen ? WH_STATE_ENABLE : WH_STATE_DISABLE);
 }
 
 static void

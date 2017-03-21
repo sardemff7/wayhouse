@@ -51,10 +51,10 @@ typedef enum {
 } WhContainerLayoutType;
 
 typedef enum {
-    WH_SURFACE_STATE_ENABLE,
-    WH_SURFACE_STATE_DISABLE,
-    WH_SURFACE_STATE_TOGGLE,
-} WhSurfaceStateChange;
+    WH_STATE_ENABLE,
+    WH_STATE_DISABLE,
+    WH_STATE_TOGGLE,
+} WhStateChange;
 
 #define WH_WORKSPACE_NO_NUMBER ((guint64) -1)
 

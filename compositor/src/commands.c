@@ -112,9 +112,9 @@ static const gchar * const _wh_commands_layout_orientations[] = {
 };
 
 static const gchar * const _wh_commands_state_changes[] = {
-    [WH_SURFACE_STATE_ENABLE] = "enable",
-    [WH_SURFACE_STATE_DISABLE] = "disable",
-    [WH_SURFACE_STATE_TOGGLE] = "toggle",
+    [WH_STATE_ENABLE] = "enable",
+    [WH_STATE_DISABLE] = "disable",
+    [WH_STATE_TOGGLE] = "toggle",
 };
 
 typedef enum {
@@ -410,6 +410,7 @@ wh_commands_new(WhCore *core)
     _wh_commands_add_symbols(self->scanner, WH_COMMAND_SCOPE_TARGET, _wh_commands_targets);
     _wh_commands_add_symbols(self->scanner, WH_COMMAND_SCOPE_LAYOUT, _wh_commands_layout_types);
     _wh_commands_add_symbols(self->scanner, WH_COMMAND_SCOPE_ORIENTATION, _wh_commands_layout_orientations);
+    _wh_commands_add_symbols(self->scanner, WH_COMMAND_SCOPE_STATE_CHANGE, _wh_commands_state_changes);
 
     return self;
 }
