@@ -34,7 +34,7 @@ struct weston_backend_config *wh_config_get_drm_config(WhConfig *config);
 struct weston_backend_config *wh_config_get_wayland_config(WhConfig *config);
 struct weston_backend_config *wh_config_get_x11_config(WhConfig *config);
 gboolean wh_config_get_xwayland(WhConfig *config);
-const gchar * const *wh_config_get_common_modules(WhConfig *config);
+const gchar * const *wh_config_get_common_plugins(WhConfig *config);
 
 const WhWorkspaceConfig *wh_config_get_first_workspace(void);
 const WhWorkspaceConfig *wh_config_get_assign(WhConfig *config, const gchar *app_id);

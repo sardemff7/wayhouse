@@ -166,95 +166,85 @@ _wh_listen(WhCore *context, const gchar *socket_name)
 }
 
 static void
-_wh_load_common_modules(WhCore *context, const gchar * const *module)
+_wh_load_common_plugins(WhCore *context, const gchar * const *plugin)
 {
-    if ( module == NULL )
+    if ( plugin == NULL )
         return;
 
-    for ( ; *module != NULL ; ++module )
+    for ( ; *plugin != NULL ; ++plugin )
     {
-#ifdef LIBWESTON_HAS_COMMON_MODULES
-        if ( weston_compositor_load_module(context->compositor, *module) < 0 )
-            g_warning("Couldn’t load common module %s", *module);
-#else /* ! LIBWESTON_HAS_COMMON_MODULES */
+#ifdef LIBWESTON_HAS_COMMON_PLUGINS
+        if ( weston_compositor_load_plugin(context->compositor, *plugin) < 0 )
+            g_warning("Couldn’t load common plugin %s", *plugin);
+#else /* ! LIBWESTON_HAS_COMMON_PLUGINS */
         gchar *path;
         GModule *mod;
-        int (*new_init)(struct weston_compositor *compositor);
+        int (*init)(struct weston_compositor *compositor);
 
-        if ( g_path_is_absolute(*module) )
-            path = g_strdup(*module);
+        if ( g_path_is_absolute(*plugin) )
+            path = g_strdup(*plugin);
         else
-            path = g_build_filename(LIBWESTON_MODULE_DIR, *module, NULL);
-        g_debug("Try libweston module %s", path);
+            path = g_build_filename(LIBWESTON_PLUGINS_DIR, *plugin, NULL);
+        g_debug("Try libweston plugin %s", path);
         mod = g_module_open(path, G_MODULE_BIND_LOCAL | G_MODULE_BIND_LAZY);
         if ( mod != NULL )
         {
-            if ( ! g_module_symbol(mod, "weston_module_init", (gpointer *) &new_init) )
-            {
-                int argc = 0;
-                int (*init)(struct weston_compositor *compositor, int *argc, char *argv[]);
-                if ( ! g_module_symbol(mod, "module_init", (gpointer *) &init) )
-                    g_debug("Couldn’t find init function for module %s", *module);
-                else if ( init(context->compositor, &argc, NULL) < 0 )
-                    g_debug("Module init failed %s", *module);
-                else
-                    mod = NULL;
-
-            }
-            else if ( new_init(context->compositor) < 0 )
-                g_debug("Module init failed %s", *module);
+            if ( ! g_module_symbol(mod, "weston_plugin_init", (gpointer *) &init) )
+                g_debug("Couldn’t find init function for plugin %s", *plugin);
+            else if ( init(context->compositor) < 0 )
+                g_debug("Plugin init failed %s", *plugin);
             else
                 mod = NULL;
             if ( mod != NULL )
                 g_module_close(mod);
         }
         else
-            g_debug("Couldn’t load module %s: %s", *module, g_module_error());
+            g_debug("Couldn’t load plugin %s: %s", *plugin, g_module_error());
         g_free(path);
-#endif /* ! LIBWESTON_HAS_COMMON_MODULES */
+#endif /* ! LIBWESTON_HAS_COMMON_PLUGINS */
     }
 }
 
 static void
-_wh_load_weston_modules(WhCore *context, const gchar * const *module)
+_wh_load_weston_plugins(WhCore *context, const gchar * const *plugin)
 {
-    if ( module == NULL )
+    if ( plugin == NULL )
         return;
 
-    for ( ; *module != NULL ; ++module )
+    for ( ; *plugin != NULL ; ++plugin )
     {
         gchar *path;
         GModule *mod;
         int argc = 0;
         int (*init)(struct weston_compositor *compositor, int *argc, char *argv[]);
 
-        if ( g_path_is_absolute(*module) )
-            path = g_strdup(*module);
+        if ( g_path_is_absolute(*plugin) )
+            path = g_strdup(*plugin);
         else
-            path = g_build_filename(WESTON_MODULE_DIR, *module, NULL);
-        g_debug("Try weston module %s", path);
+            path = g_build_filename(WESTON_PLUGINS_DIR, *plugin, NULL);
+        g_debug("Try weston plugin %s", path);
         mod = g_module_open(path, G_MODULE_BIND_LOCAL | G_MODULE_BIND_LAZY);
         if ( mod != NULL )
         {
             if ( ! g_module_symbol(mod, "wet_module_init", (gpointer *) &init) )
             {
                 if ( ! g_module_symbol(mod, "module_init", (gpointer *) &init) )
-                    g_debug("Couldn’t find init function for module %s", *module);
+                    g_debug("Couldn’t find init function for plugin %s", *plugin);
                 else if ( init(context->compositor, &argc, NULL) < 0 )
-                    g_debug("Module init failed %s", *module);
+                    g_debug("Plugin init failed %s", *plugin);
                 else
                     mod = NULL;
 
             }
             else if ( init(context->compositor, &argc, NULL) < 0 )
-                g_debug("Module init failed %s", *module);
+                g_debug("Plugin init failed %s", *plugin);
             else
                 mod = NULL;
             if ( mod != NULL )
                 g_module_close(mod);
         }
         else
-            g_debug("Couldn’t load module %s: %s", *module, g_module_error());
+            g_debug("Couldn’t load plugin %s: %s", *plugin, g_module_error());
         g_free(path);
     }
 }
@@ -316,8 +306,8 @@ main(int argc, char *argv[])
     gboolean use_pixman = FALSE;
     gchar *runtime_dir = NULL;
     gchar *socket_name = NULL;
-    gchar **common_modules = NULL;
-    gchar **weston_modules = NULL;
+    gchar **common_plugins = NULL;
+    gchar **weston_plugins = NULL;
     gboolean print_version = FALSE;
 
     GOptionContext *option_context = NULL;
@@ -325,8 +315,8 @@ main(int argc, char *argv[])
     {
         { "use-pixman",           'p', 0,                     G_OPTION_ARG_NONE,         &use_pixman,        "Use Pixman rendering",                  NULL },
         { "socket",               's', 0,                     G_OPTION_ARG_STRING,       &socket_name,       "Socket name to use",                    "<socket-name>" },
-        { "common-modules",       'm', 0,                     G_OPTION_ARG_STRING_ARRAY, &common_modules,    "Common libweston modules to load",      "<module>" },
-        { "weston-modules",       'w', 0,                     G_OPTION_ARG_STRING_ARRAY, &weston_modules,    "weston modules to load",                "<module>" },
+        { "common-plugins",       'm', 0,                     G_OPTION_ARG_STRING_ARRAY, &common_plugins,    "Common libweston plugins to load",      "<plugin>" },
+        { "weston-plugins",       'w', 0,                     G_OPTION_ARG_STRING_ARRAY, &weston_plugins,    "weston plugins to load",                "<plugin>" },
         { "version",              'V', 0,                     G_OPTION_ARG_NONE,         &print_version,     "Print version",                         NULL },
         { .long_name = NULL }
     };
@@ -403,9 +393,9 @@ main(int argc, char *argv[])
     if ( wh_config_get_xwayland(context->config) )
         context->xwayland = wh_xwayland_new(context);
 
-    _wh_load_common_modules(context, (const gchar * const *) common_modules);
-    _wh_load_common_modules(context, wh_config_get_common_modules(context->config));
-    _wh_load_weston_modules(context, (const gchar * const *) weston_modules);
+    _wh_load_common_plugins(context, (const gchar * const *) common_plugins);
+    _wh_load_common_plugins(context, wh_config_get_common_plugins(context->config));
+    _wh_load_weston_plugins(context, (const gchar * const *) weston_plugins);
 
     gchar back_colour[8];
     gchar *back_argv[] = {
@@ -440,8 +430,8 @@ error:
     g_water_wayland_server_source_free(context->source);
 
 end:
-    g_strfreev(weston_modules);
-    g_strfreev(common_modules);
+    g_strfreev(weston_plugins);
+    g_strfreev(common_plugins);
     g_free(runtime_dir);
     g_free(context);
 

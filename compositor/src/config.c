@@ -65,7 +65,7 @@ struct _WhConfig {
     GHashTable *outputs;
     GHashTable *output_aliases;
     gboolean xwayland;
-    gchar **common_modules;
+    gchar **common_plugins;
     GHashTable *assigns;
 };
 
@@ -554,7 +554,7 @@ _wh_config_global_parse(WhConfig *self, GKeyFile *file)
     if ( g_key_file_has_group(file, "wayhouse") )
     {
         _wh_config_get_boolean(file, "wayhouse", "xwayland", &self->xwayland);
-        _wh_config_get_string_list(file, "wayhouse", "common-modules", &self->common_modules);
+        _wh_config_get_string_list(file, "wayhouse", "common-plugins", &self->common_plugins);
     }
     if ( g_key_file_has_group(file, "keymap") )
     {
@@ -836,9 +836,9 @@ wh_config_get_xwayland(WhConfig *self)
 }
 
 const gchar * const *
-wh_config_get_common_modules(WhConfig *self)
+wh_config_get_common_plugins(WhConfig *self)
 {
-    return (const gchar * const *) self->common_modules;
+    return (const gchar * const *) self->common_plugins;
 }
 
 const WhWorkspaceConfig *
