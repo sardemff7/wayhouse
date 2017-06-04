@@ -82,8 +82,8 @@ typedef struct {
     uint32_t global_name;
     struct zww_dock_manager_v2 *dock_manager;
     WhDockChild child;
-    NkColourDouble background_colour;
-    NkColourDouble text_colour;
+    NkColour background_colour;
+    NkColour text_colour;
     WhDock *dock;
 } WhDockContext;
 
@@ -488,7 +488,7 @@ static gboolean
 _wh_dock_parse_colour(const gchar *option_name, const gchar *value, gpointer data, GError **error)
 {
     WhDockContext *self = data;
-    NkColourDouble *colour;
+    NkColour *colour;
     if ( option_name[1] == '-' )
         option_name += 2;
     else
@@ -504,7 +504,7 @@ _wh_dock_parse_colour(const gchar *option_name, const gchar *value, gpointer dat
     default:
         g_return_val_if_reached(FALSE);
     }
-    return nk_colour_double_parse(value, colour);
+    return nk_colour_parse(value, colour);
 }
 
 int

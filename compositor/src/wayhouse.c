@@ -26,9 +26,7 @@
 #include <locale.h>
 
 #include <glib.h>
-#ifdef ENABLE_NLS
 #include <glib/gi18n.h>
-#endif /* ENABLE_NLS */
 #include <glib/gprintf.h>
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
@@ -280,10 +278,8 @@ main(int argc, char *argv[])
 #endif /* WAYHOUSE_DEBUG */
 
     setlocale(LC_ALL, "");
-#ifdef ENABLE_NLS
     bindtextdomain(GETTEXT_PACKAGE, WAYHOUSE_LOCALEDIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-#endif /* ENABLE_NLS */
 
     if ( ! g_get_filename_charsets(NULL) )
     {
