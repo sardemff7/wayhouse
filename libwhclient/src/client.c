@@ -127,7 +127,6 @@ struct _WhClientSurface {
     WhClientBufferPool *pool;
     WhClientSize size;
     WhOutput *outputs[WAYLAND_OUTPUTS_MAX_NUMBER];
-    struct wl_callback *frame_cb;
     GList *texts;
 };
 
@@ -397,10 +396,9 @@ wh_client_buffer_commit(WhClientBuffer *self, struct wl_callback **frame_cb)
     wl_surface_attach(surface->surface, self->buffer, 0, 0);
     if ( wl_surface_get_version(surface->surface) >= WL_SURFACE_SET_BUFFER_SCALE_SINCE_VERSION )
         wl_surface_set_buffer_scale(surface->surface, self->pool->scale);
-    wl_surface_commit(surface->surface);
-
     if ( frame_cb != NULL )
         *frame_cb = wl_surface_frame(surface->surface);
+    wl_surface_commit(surface->surface);
 }
 
 cairo_surface_t *
