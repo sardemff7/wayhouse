@@ -1,4 +1,4 @@
-executable('wayhouse', [
+executable('wayhouse', files(
     'src/wayhouse.c',
     'src/types.h',
     'src/config_.h',
@@ -13,7 +13,7 @@ executable('wayhouse', [
     'src/containers.c',
     'src/xwayland.h',
     'src/xwayland.c',
-    ],
+    ),
     c_args: [
         '-DG_LOG_DOMAIN="wayhouse"'
     ],

@@ -1,8 +1,8 @@
 libwhclient_inc = include_directories('include')
 libwhclient_deps = [ pango, cairo, libgwater_wayland, wayland_client, libnkutils, glib ]
-libwhclient_lib = static_library('libwhclient', [
+libwhclient_lib = static_library('libwhclient', files(
         'src/client.c'
-    ],
+    ),
     c_args: [
         '-DG_LOG_DOMAIN="libwhclient"'
     ],

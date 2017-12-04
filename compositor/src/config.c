@@ -273,7 +273,7 @@ _wh_config_get_enum(GKeyFile *file, const gchar *section, const gchar *key, cons
     if ( ret != 0 )
         return ret;
 
-    if ( ! nk_enum_parse(string, values, size, TRUE, value) )
+    if ( ! nk_enum_parse(string, values, size, TRUE, FALSE, value) )
         ret = -1;
     g_free(string);
 
@@ -408,7 +408,7 @@ _wh_config_binding_parse_key(const gchar *binding, enum weston_keyboard_modifier
     *modifiers = 0;
     if ( g_utf8_strchr(binding, -1, '+') == NULL )
     {
-        if ( ! nk_enum_parse(binding, _wh_config_modifiers, G_N_ELEMENTS(_wh_config_modifiers), TRUE, &value) )
+        if ( ! nk_enum_parse(binding, _wh_config_modifiers, G_N_ELEMENTS(_wh_config_modifiers), TRUE, FALSE, &value) )
             return binding;
         *modifiers = (1 << value);
         return NULL;
@@ -422,7 +422,7 @@ _wh_config_binding_parse_key(const gchar *binding, enum weston_keyboard_modifier
 
         b = g_alloca(l );
         g_snprintf(b, l, "%s", s);
-        if ( nk_enum_parse(b, _wh_config_modifiers, G_N_ELEMENTS(_wh_config_modifiers), TRUE, &value) )
+        if ( nk_enum_parse(b, _wh_config_modifiers, G_N_ELEMENTS(_wh_config_modifiers), TRUE, FALSE, &value) )
             *modifiers |= (1 << value);
     }
     return s;

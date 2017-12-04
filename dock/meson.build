@@ -1,5 +1,6 @@
-executable('wh-dock', [
+executable('wh-dock', files(
         'src/dock.c',
+    ) + [
         wayland_scanner_client.process(join_paths(ww_protocol_dir, 'unstable', 'dock-manager', 'dock-manager-unstable-v2.xml')),
         wayland_scanner_code.process(join_paths(ww_protocol_dir, 'unstable', 'dock-manager', 'dock-manager-unstable-v2.xml')),
     ],
